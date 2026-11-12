@@ -1,0 +1,403 @@
+[
+{
+  "model": "catalog.product",
+  "pk": 2,
+  "fields": {
+    "name": "THHN Copper Building Wire",
+    "description": "Stranded copper conductor for indoor electrical conduit installations.",
+    "sku": "CAB-001",
+    "category": 3,
+    "tags": [
+      4,
+      6,
+      7
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 3,
+  "fields": {
+    "name": "UF-B Outdoor Feeder Cable",
+    "description": "Copper underground feeder cable for outdoor electrical installations.",
+    "sku": "CAB-002",
+    "category": 3,
+    "tags": [
+      3,
+      7,
+      11
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 4,
+  "fields": {
+    "name": "Flexible Copper Control Cable",
+    "description": "Flexible copper cable for industrial control panels and equipment.",
+    "sku": "CAB-003",
+    "category": 3,
+    "tags": [
+      6,
+      7,
+      9
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 5,
+  "fields": {
+    "name": "Low-Voltage Landscape Cable",
+    "description": "Flexible copper cable for outdoor landscape lighting circuits.",
+    "sku": "CAB-004",
+    "category": 3,
+    "tags": [
+      3,
+      6,
+      7,
+      12
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 6,
+  "fields": {
+    "name": "Waterproof Wire Connector",
+    "description": "Waterproof connector for joining copper wires in outdoor junction boxes.",
+    "sku": "CON-001",
+    "category": 4,
+    "tags": [
+      3,
+      5,
+      7
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 7,
+  "fields": {
+    "name": "Indoor Lever Connector",
+    "description": "Reusable lever connector for copper conductors in indoor wiring.",
+    "sku": "CON-002",
+    "category": 4,
+    "tags": [
+      4,
+      7
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 8,
+  "fields": {
+    "name": "Industrial Cable Gland",
+    "description": "Heavy-duty waterproof cable gland for industrial electrical enclosures",
+    "sku": "CON-003",
+    "category": 4,
+    "tags": [
+      5,
+      9,
+      11
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 9,
+  "fields": {
+    "name": "Crimp Ring Terminal",
+    "description": "Copper ring terminal for low-voltage electrical connections.",
+    "sku": "CON-004",
+    "category": 4,
+    "tags": [
+      7,
+      12
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 10,
+  "fields": {
+    "name": "LED Floodlight",
+    "description": "Waterproof LED floodlight for outdoor industrial lighting applications.",
+    "sku": "LGT-001",
+    "category": 2,
+    "tags": [
+      3,
+      5,
+      8,
+      9
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 11,
+  "fields": {
+    "name": "LED Recessed Downlight",
+    "description": "Energy-efficient LED fixture for indoor residential ceilings.",
+    "sku": "LGT-002",
+    "category": 2,
+    "tags": [
+      4,
+      8,
+      10
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 12,
+  "fields": {
+    "name": "LED Strip Light",
+    "description": "Flexible low-voltage LED strip for indoor accent lighting.",
+    "sku": "LGT-003",
+    "category": 2,
+    "tags": [
+      4,
+      6,
+      8,
+      12
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 13,
+  "fields": {
+    "name": "Warehouse High-Bay Light",
+    "description": "Heavy-duty LED lighting fixture for industrial warehouses.",
+    "sku": "LGT-004",
+    "category": 2,
+    "tags": [
+      4,
+      8,
+      9,
+      11
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 14,
+  "fields": {
+    "name": "Residential Circuit Breaker",
+    "description": "Single-pole circuit breaker for residential electrical distribution panels.",
+    "sku": "CIR-001",
+    "category": 5,
+    "tags": [
+      4,
+      10
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 15,
+  "fields": {
+    "name": "Industrial Circuit Breaker",
+    "description": "Heavy-duty circuit breaker for industrial electrical panels.",
+    "sku": "CIR-002",
+    "category": 5,
+    "tags": [
+      4,
+      9,
+      11
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 16,
+  "fields": {
+    "name": "GFCI Receptacle",
+    "description": "Ground-fault protection receptacle for residential electrical installations.",
+    "sku": "CIR-003",
+    "category": 5,
+    "tags": [
+      4,
+      10
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 17,
+  "fields": {
+    "name": "Surge Protection Device",
+    "description": "Surge protection module for low-voltage industrial electrical systems.",
+    "sku": "CIR-004",
+    "category": 5,
+    "tags": [
+      9,
+      12
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 18,
+  "fields": {
+    "name": "Insulated Screwdriver",
+    "description": "Insulated screwdriver for low-voltage electrical maintenance.",
+    "sku": "TOL-001",
+    "category": 6,
+    "tags": [
+      11,
+      12
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 19,
+  "fields": {
+    "name": "Wire Stripper",
+    "description": "Hand tool for stripping insulation from copper electrical conductors.",
+    "sku": "TOL-002",
+    "category": 6,
+    "tags": [
+      7
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 20,
+  "fields": {
+    "name": "Cable Crimping Tool",
+    "description": "Heavy-duty ratcheting crimper for industrial electrical terminals.",
+    "sku": "TOL-003",
+    "category": 6,
+    "tags": [
+      9,
+      11
+    ]
+  }
+},
+{
+  "model": "catalog.product",
+  "pk": 21,
+  "fields": {
+    "name": "Non-Contact Voltage Tester",
+    "description": "Non-contact tester for detecting voltage in electrical wiring.",
+    "sku": "TOL-004",
+    "category": 6,
+    "tags": []
+  }
+},
+{
+  "model": "catalog.tag",
+  "pk": 3,
+  "fields": {
+    "name": "Outdoor"
+  }
+},
+{
+  "model": "catalog.tag",
+  "pk": 4,
+  "fields": {
+    "name": "Indoor"
+  }
+},
+{
+  "model": "catalog.tag",
+  "pk": 5,
+  "fields": {
+    "name": "Waterproof"
+  }
+},
+{
+  "model": "catalog.tag",
+  "pk": 6,
+  "fields": {
+    "name": "Flexible"
+  }
+},
+{
+  "model": "catalog.tag",
+  "pk": 7,
+  "fields": {
+    "name": "Copper"
+  }
+},
+{
+  "model": "catalog.tag",
+  "pk": 8,
+  "fields": {
+    "name": "LED"
+  }
+},
+{
+  "model": "catalog.tag",
+  "pk": 9,
+  "fields": {
+    "name": "Industrial"
+  }
+},
+{
+  "model": "catalog.tag",
+  "pk": 10,
+  "fields": {
+    "name": "Residential"
+  }
+},
+{
+  "model": "catalog.tag",
+  "pk": 11,
+  "fields": {
+    "name": "Heavy Duty"
+  }
+},
+{
+  "model": "catalog.tag",
+  "pk": 12,
+  "fields": {
+    "name": "Low Voltage"
+  }
+},
+{
+  "model": "catalog.category",
+  "pk": 2,
+  "fields": {
+    "name": "Lighting",
+    "description": "Lighting fixtures to protect electrical circuits and equipment"
+  }
+},
+{
+  "model": "catalog.category",
+  "pk": 3,
+  "fields": {
+    "name": "Cables & Wires",
+    "description": "Electrical cables and wires for power distribution and installations"
+  }
+},
+{
+  "model": "catalog.category",
+  "pk": 4,
+  "fields": {
+    "name": "Connectors",
+    "description": "Components used to connect, terminate, and secure electrical wiring"
+  }
+},
+{
+  "model": "catalog.category",
+  "pk": 5,
+  "fields": {
+    "name": "Circuit Protection",
+    "description": "Devices designed to protect electrical circuits and equipment"
+  }
+},
+{
+  "model": "catalog.category",
+  "pk": 6,
+  "fields": {
+    "name": "Tools",
+    "description": "Hand tools and testing equipment for eletctrical installations and maintenance"
+  }
+}
+]
