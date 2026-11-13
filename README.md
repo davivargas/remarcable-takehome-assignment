@@ -6,6 +6,23 @@ A Django take-home project for Remarcable. It lets users search electrical produ
 
 Python 3.13, Django 6.1.3, SQLite, and Django templates. SQLite keeps setup simple and is sufficient for this small, local catalog. No database server is needed.
 
+## Run with Docker
+
+```bash
+docker build -t catalog .
+docker run --rm -p 8000:8000 --name catalog catalog
+```
+
+Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/). The sample data is loaded when the image is built.
+
+To use the admin, create an account in the running container:
+
+```bash
+docker exec -it catalog python manage.py createsuperuser
+```
+
+The database lives inside the container, so changes made through the admin are lost when it stops.
+
 ## Run locally
 
 Tested with Python 3.13. You also need Git. On macOS / Linux the command may be `python3` instead of `python`.
