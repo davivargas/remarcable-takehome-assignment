@@ -4,8 +4,10 @@ from django.test import TestCase
 from catalog.filters import filter_products
 from catalog.models import Category, Product
 
-
-class ProductFilterTests(TestCase):
+class NameOrDescriptionSearchTests(TestCase):
+    """
+    Test the filter_products function for searching by name or description
+    """
 
     @classmethod
     def setUpTestData(cls):
@@ -84,3 +86,81 @@ class ProductFilterTests(TestCase):
         """
         results = filter_products("")
         self.assertCountEqual(results, Product.objects.all())
+
+class CategoryFilterTests(TestCase):
+    """
+    Test the filter_products function for filtering by category
+    """
+    @classmethod
+    def setUpTestData(cls):
+        cls.category1 = Category.objects.create(name="Cables")
+        cls.category2 = Category.objects.create(name="Connectors")
+        cls.category3 = Category.objects.create(name="Lighting")
+
+        cls.product1 = Product.objects.create(
+            name="Copper Cable",
+            description="Electrical conductor for panels",
+            sku="CAB-001",
+            category=cls.category1
+        )
+
+        cls.product2 = Product.objects.create(
+            name="Industrial Connector",
+            description="Connector made from copper",
+            sku="CON-001",
+            category=cls.category2
+        )
+
+        cls.product3 = Product.objects.create(
+            name="LED Floodlight",
+            description="Outdoor industrial lighting",
+            sku="LGT-001",
+            category=cls.category3
+        )
+
+    def test_filter_by_single_category(self):
+        """
+        test that filtering by a single category returns only 
+        products in that category
+        """
+        results = filter_products(category_ids=[self.category1.id])
+        self.assertCountEqual(results, [self.product1])
+
+    def test_filter_by_multiple_categories(self):
+        """
+        test that filtering by multiple categories returns products
+        in any of those categories
+        """
+        results = filter_products(
+            category_ids=[self.category1.id, self.category2.id]
+        )
+        self.assertCountEqual(results, [self.product1, self.product2])
+
+    def test_filter_with_no_matching_categories(self):
+        """
+        test that filtering by a non-existent category returns no products
+        """
+        results = filter_products(category_ids=[999])
+        self.assertFalse(results.exists())
+
+    def test_filter_with_no_categories(self):
+        """
+        test that an empty category selection returns all products
+        """
+        results = filter_products(category_ids=[])
+
+        self.assertCountEqual(
+            results,
+            [self.product1, self.product2, self.product3]
+        )
+
+    def test_filter_by_category_and_search(self):
+        """
+        test that category and text filters are combined using AND
+        """
+        results = filter_products(
+            search_term="copper",
+            category_ids=[self.category1.id, self.category3.id]
+        )
+
+        self.assertCountEqual(results, [self.product1])
