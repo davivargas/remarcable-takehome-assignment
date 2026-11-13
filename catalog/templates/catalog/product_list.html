@@ -15,6 +15,7 @@
       <h1>Electrical Product Catalog</h1>
       <p>Search and filter available electrical products.</p>
 
+      {# GET keeps the filters in the URL, so a search can be bookmarked or shared #}
       <form method="get" class="search-form">
         <div class="field">
           {{ form.search.label_tag }} {{ form.search }} {{ form.search.errors }}
@@ -38,6 +39,7 @@
         </div>
       </form>
 
+      {# invalid filters show a message instead of a results list #}
       {% if form.errors %}
       <p class="error-message" role="alert">
         Please correct the filters above.
