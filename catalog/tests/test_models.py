@@ -1,4 +1,3 @@
-
 from django.db import IntegrityError, transaction
 from django.db.models import ProtectedError
 from django.test import TestCase

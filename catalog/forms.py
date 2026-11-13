@@ -1,4 +1,3 @@
-
 from django import forms
 
 from catalog.models import Category, Tag

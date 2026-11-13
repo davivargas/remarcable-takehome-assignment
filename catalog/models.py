@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Product(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
@@ -9,29 +10,31 @@ class Product(models.Model):
 
     # PROTECT blocks deleting a category that still has products,
     # instead of silently deleting the products with it (CASCADE).
-    # 'Category' and 'Tag' are passed as strings because those
+    # "Category" and "Tag" are passed as strings because those
     # classes are defined further down in this file
     category = models.ForeignKey(
-        'Category', 
-        on_delete=models.PROTECT, 
-        related_name='products'
+        "Category",
+        on_delete=models.PROTECT,
+        related_name="products"
     )
 
     # blank=True lets a product be saved without any tags
     tags = models.ManyToManyField(
-        'Tag', 
-        related_name='products', 
+        "Tag",
+        related_name="products",
         blank=True
     )
 
     def __str__(self):
         return self.name
 
+
 class Tag(models.Model):
     name = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return self.name
+
 
 class Category(models.Model):
     name = models.CharField(max_length=100, unique=True)

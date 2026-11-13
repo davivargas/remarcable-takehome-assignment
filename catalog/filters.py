@@ -1,6 +1,6 @@
 from django.db.models import Q
 
-from catalog import models
+from catalog.models import Product
 
 
 def filter_products(search_term="", category_ids=None, tag_ids=None):
@@ -8,16 +8,16 @@ def filter_products(search_term="", category_ids=None, tag_ids=None):
     Filter products by name or description, categories, and tags
     Return a QuerySet with unique products in deterministic order
     """
-    
+
     # since QuerySet is lazy, we can start with all products
     # and filter them down based on the parameters provided
-    products = models.Product.objects.all()
+    products = Product.objects.all()
     search_term = search_term.strip()
-    
+
     if search_term:
         # conditions inside one ".filter()" are ANDed by default,
         # so we need Q objects to say "name OR description"
-        products =  products.filter(
+        products = products.filter(
             Q(name__icontains=search_term) |
             Q(description__icontains=search_term)
         )
@@ -35,4 +35,4 @@ def filter_products(search_term="", category_ids=None, tag_ids=None):
             products = products.filter(tags__id=tag_id)
 
     # names can repeat, so pk breaks the tie and keeps the order stable
-    return products.order_by('name', 'pk')
+    return products.order_by("name", "pk")

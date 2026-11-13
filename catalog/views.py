@@ -4,6 +4,7 @@ from catalog.filters import filter_products
 from catalog.forms import ProductFilterForm
 from catalog.models import Product
 
+
 def product_list(request):
     """
     Display the catalog using validated search and filter parameters

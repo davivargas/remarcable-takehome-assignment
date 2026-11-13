@@ -1,4 +1,3 @@
-
 from django.test import TestCase
 
 from catalog.filters import filter_products
