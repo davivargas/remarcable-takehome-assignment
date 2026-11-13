@@ -3,7 +3,7 @@ from django.db.models import Q
 from catalog import models
 
 
-def filter_products(search_term="", category_ids=None):
+def filter_products(search_term="", category_ids=None, tag_ids=None):
     """
     Search for products by name or description.
     Returns a queryset of matching products
@@ -22,4 +22,10 @@ def filter_products(search_term="", category_ids=None):
     if category_ids:
         products = products.filter(category__id__in=category_ids)
 
+    if tag_ids:
+        products = products.filter(tags__id__in=tag_ids)
+
+    # avoid duplicates if multiple tags match
+    products = products.distinct()  
+    
     return products

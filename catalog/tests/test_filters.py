@@ -2,7 +2,7 @@
 from django.test import TestCase
 
 from catalog.filters import filter_products
-from catalog.models import Category, Product
+from catalog.models import Category, Product, Tag
 
 class NameOrDescriptionSearchTests(TestCase):
     """
@@ -93,29 +93,29 @@ class CategoryFilterTests(TestCase):
     """
     @classmethod
     def setUpTestData(cls):
-        cls.category1 = Category.objects.create(name="Cables")
-        cls.category2 = Category.objects.create(name="Connectors")
-        cls.category3 = Category.objects.create(name="Lighting")
+        cls.category_cables = Category.objects.create(name="Cables")
+        cls.category_connectors = Category.objects.create(name="Connectors")
+        cls.category_lighting = Category.objects.create(name="Lighting")
 
         cls.product1 = Product.objects.create(
             name="Copper Cable",
             description="Electrical conductor for panels",
             sku="CAB-001",
-            category=cls.category1
+            category=cls.category_cables
         )
 
         cls.product2 = Product.objects.create(
             name="Industrial Connector",
             description="Connector made from copper",
             sku="CON-001",
-            category=cls.category2
+            category=cls.category_connectors
         )
 
         cls.product3 = Product.objects.create(
             name="LED Floodlight",
             description="Outdoor industrial lighting",
             sku="LGT-001",
-            category=cls.category3
+            category=cls.category_lighting
         )
 
     def test_filter_by_single_category(self):
@@ -123,7 +123,7 @@ class CategoryFilterTests(TestCase):
         test that filtering by a single category returns only 
         products in that category
         """
-        results = filter_products(category_ids=[self.category1.id])
+        results = filter_products(category_ids=[self.category_cables.id])
         self.assertCountEqual(results, [self.product1])
 
     def test_filter_by_multiple_categories(self):
@@ -132,7 +132,7 @@ class CategoryFilterTests(TestCase):
         in any of those categories
         """
         results = filter_products(
-            category_ids=[self.category1.id, self.category2.id]
+            category_ids=[self.category_cables.id, self.category_connectors.id]
         )
         self.assertCountEqual(results, [self.product1, self.product2])
 
@@ -160,7 +160,126 @@ class CategoryFilterTests(TestCase):
         """
         results = filter_products(
             search_term="copper",
-            category_ids=[self.category1.id, self.category3.id]
+            category_ids=[self.category_cables.id, self.category_lighting.id]
         )
 
         self.assertCountEqual(results, [self.product1])
+
+class TagFilterTests(TestCase):
+    """
+    test the filter_products function for filtering by tags
+    """
+    @classmethod
+    def setUpTestData(cls):
+        cls.category = Category.objects.create(name="Cables")
+
+        cls.tag_copper = Tag.objects.create(name="Copper")
+        cls.tag_outdoor = Tag.objects.create(name="Outdoor")
+        cls.tag_indoor = Tag.objects.create(name="Indoor")
+
+        cls.product1 = Product.objects.create(
+            name="Copper Cable",
+            description="Electrical conductor for panels",
+            sku="CAB-001",
+            category=cls.category
+        )
+        cls.product1.tags.add(cls.tag_copper, cls.tag_outdoor)
+
+        cls.product2 = Product.objects.create(
+            name="Outdoor Cable",
+            description="Weather-resistant cable",
+            sku="CAB-002",
+            category=cls.category
+        )
+        cls.product2.tags.add(cls.tag_outdoor)
+
+        cls.product3 = Product.objects.create(
+            name="Indoor Cable",
+            description="Cable for indoor use",
+            sku="CAB-003",
+            category=cls.category
+        )
+        cls.product3.tags.add(cls.tag_indoor)
+
+        cls.product4 = Product.objects.create(
+            name="Basic Cable",
+            description="General purpose cable",
+            sku="CAB-004",
+            category=cls.category
+        )
+
+    def test_filter_by_single_tag(self):
+        """
+        test that filtering by a single tag returns only 
+        products with that tag
+        """
+        results = filter_products(tag_ids=[self.tag_copper.id])
+        self.assertCountEqual(results, [self.product1])
+
+    def test_filter_by_multiple_tags(self):
+        """
+        test that filtering by multiple tags returns products
+        with any of those tags (OR logic)
+        """
+        results = filter_products(
+            tag_ids=[self.tag_copper.id, self.tag_outdoor.id]
+        )
+        self.assertCountEqual(results, [self.product1, self.product2])
+
+    def test_filter_with_no_tags(self):
+        """
+        test that an empty tag selection returns all products
+        """
+        results = filter_products(tag_ids=[])
+        self.assertCountEqual(
+            results,
+            [self.product1, self.product2, self.product3, self.product4]
+        )
+
+    def test_filter_with_no_matching_tags(self):
+        """
+        test that filtering by a non-existent tag returns no products
+        """
+        results = filter_products(tag_ids=[999])
+        self.assertFalse(results.exists())
+
+    def test_filter_by_search_and_tags(self):
+        """
+        test that text search and tag filters are combined using AND
+        """
+        text_only_product = Product.objects.create(
+            name="Copper Indoor Cable",
+            description="Electrical wiring",
+            sku="CAB-005",
+            category=self.category
+        )
+        text_only_product.tags.add(self.tag_indoor)
+
+        results = filter_products(
+            search_term="copper",
+            tag_ids=[self.tag_outdoor.id]
+        )
+
+        self.assertCountEqual(results, [self.product1])
+
+    def test_filter_by_category_and_tags(self):
+        """
+        test that category and tag filters are combined using AND
+        """
+        other_category = Category.objects.create(name="Connectors")
+
+        other_product = Product.objects.create(
+            name="Copper Connector",
+            description="Electrical connector",
+            sku="CON-001",
+            category=other_category
+        )
+        other_product.tags.add(self.tag_copper)
+
+        results = filter_products(
+            category_ids=[self.category.id],
+            tag_ids=[self.tag_copper.id]
+        )
+
+        self.assertCountEqual(results, [self.product1])
+
