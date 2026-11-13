@@ -4,6 +4,7 @@ from django.test import TestCase
 from catalog.filters import filter_products
 from catalog.models import Category, Product, Tag
 
+
 class NameOrDescriptionSearchTests(TestCase):
     """
     Test the filter_products function for searching by name or description
@@ -87,10 +88,12 @@ class NameOrDescriptionSearchTests(TestCase):
         results = filter_products("")
         self.assertCountEqual(results, Product.objects.all())
 
+
 class CategoryFilterTests(TestCase):
     """
     Test the filter_products function for filtering by category
     """
+
     @classmethod
     def setUpTestData(cls):
         cls.category_cables = Category.objects.create(name="Cables")
@@ -120,7 +123,7 @@ class CategoryFilterTests(TestCase):
 
     def test_filter_by_single_category(self):
         """
-        test that filtering by a single category returns only 
+        test that filtering by a single category returns only
         products in that category
         """
         results = filter_products(category_ids=[self.category_cables.id])
@@ -154,21 +157,12 @@ class CategoryFilterTests(TestCase):
             [self.product1, self.product2, self.product3]
         )
 
-    def test_filter_by_category_and_search(self):
-        """
-        test that category and text filters are combined using AND
-        """
-        results = filter_products(
-            search_term="copper",
-            category_ids=[self.category_cables.id, self.category_lighting.id]
-        )
-
-        self.assertCountEqual(results, [self.product1])
 
 class TagFilterTests(TestCase):
     """
-    test the filter_products function for filtering by tags
+    Test the filter_products function for filtering by tags
     """
+
     @classmethod
     def setUpTestData(cls):
         cls.category = Category.objects.create(name="Cables")
@@ -210,7 +204,7 @@ class TagFilterTests(TestCase):
 
     def test_filter_by_single_tag(self):
         """
-        test that filtering by a single tag returns only 
+        test that filtering by a single tag returns only
         products with that tag
         """
         results = filter_products(tag_ids=[self.tag_copper.id])
@@ -243,43 +237,207 @@ class TagFilterTests(TestCase):
         results = filter_products(tag_ids=[999])
         self.assertFalse(results.exists())
 
+
+class CombinedFiltersTests(TestCase):
+    """
+    Test combined filtering, edge cases, and result ordering
+    """
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.category_cables = Category.objects.create(name="Cables")
+        cls.category_connectors = Category.objects.create(name="Connectors")
+        cls.category_lighting = Category.objects.create(name="Lighting")
+
+        cls.tag_copper = Tag.objects.create(name="Copper")
+        cls.tag_outdoor = Tag.objects.create(name="Outdoor")
+        cls.tag_indoor = Tag.objects.create(name="Indoor")
+
+        # Matches text, category, and both selected tags
+        cls.product1 = Product.objects.create(
+            name="Copper Cable",
+            description="Flexible electrical conductor",
+            sku="CAB-001",
+            category=cls.category_cables
+        )
+        cls.product1.tags.add(cls.tag_copper, cls.tag_outdoor)
+
+        # Matches text through description and has the Outdoor tag
+        cls.product2 = Product.objects.create(
+            name="Industrial Connector",
+            description="Copper terminal for wiring",
+            sku="CON-001",
+            category=cls.category_connectors
+        )
+        cls.product2.tags.add(cls.tag_outdoor)
+
+        # Matches category and tag, but not text
+        cls.product3 = Product.objects.create(
+            name="Outdoor Connector",
+            description="Steel electrical fitting",
+            sku="CON-002",
+            category=cls.category_connectors
+        )
+        cls.product3.tags.add(cls.tag_outdoor)
+
+        # Matches text and tag, but not selected categories
+        cls.product4 = Product.objects.create(
+            name="Copper Floodlight",
+            description="LED lighting fixture",
+            sku="LGT-001",
+            category=cls.category_lighting
+        )
+        cls.product4.tags.add(cls.tag_outdoor)
+
+        # Matches text and category, but not selected tags
+        cls.product5 = Product.objects.create(
+            name="Copper Tester",
+            description="Electrical testing tool",
+            sku="TOL-001",
+            category=cls.category_cables
+        )
+        cls.product5.tags.add(cls.tag_indoor)
+
+        # Matches text through description, category, and tag
+        cls.product6 = Product.objects.create(
+            name="Industrial Cable",
+            description="Copper electrical conductor",
+            sku="CAB-002",
+            category=cls.category_cables
+        )
+        cls.product6.tags.add(cls.tag_copper)
+
+        # Has no tags and does not match text
+        cls.product7 = Product.objects.create(
+            name="Basic Cable",
+            description="General purpose electrical cable",
+            sku="CAB-003",
+            category=cls.category_cables
+        )
+
+    def test_filter_by_category_and_search(self):
+        """
+        test that category and text filters are combined using AND
+        """
+        results = filter_products(
+            search_term="copper",
+            category_ids=[
+                self.category_cables.id,
+                self.category_lighting.id
+            ]
+        )
+
+        self.assertCountEqual(
+            results,
+            [self.product1, self.product4, self.product5, self.product6]
+        )
+
     def test_filter_by_search_and_tags(self):
         """
         test that text search and tag filters are combined using AND
         """
-        text_only_product = Product.objects.create(
-            name="Copper Indoor Cable",
-            description="Electrical wiring",
-            sku="CAB-005",
-            category=self.category
-        )
-        text_only_product.tags.add(self.tag_indoor)
-
         results = filter_products(
             search_term="copper",
             tag_ids=[self.tag_outdoor.id]
         )
 
-        self.assertCountEqual(results, [self.product1])
+        self.assertCountEqual(
+            results,
+            [self.product1, self.product2, self.product4]
+        )
 
     def test_filter_by_category_and_tags(self):
         """
-        test that category and tag filters are combined using AND
+        test that category and tag filters are combined using AND,
+        with OR within each group
         """
-        other_category = Category.objects.create(name="Connectors")
-
-        other_product = Product.objects.create(
-            name="Copper Connector",
-            description="Electrical connector",
-            sku="CON-001",
-            category=other_category
-        )
-        other_product.tags.add(self.tag_copper)
-
         results = filter_products(
-            category_ids=[self.category.id],
+            category_ids=[
+                self.category_cables.id,
+                self.category_connectors.id
+            ],
+            tag_ids=[
+                self.tag_copper.id,
+                self.tag_outdoor.id
+            ]
+        )
+
+        self.assertCountEqual(
+            results,
+            [self.product1, self.product2, self.product3, self.product6]
+        )
+
+    def test_filter_by_all_three_groups(self):
+        """
+        test that text, category, and tag filters combine using AND,
+        without duplicate products
+        """
+        results = filter_products(
+            search_term="copper",
+            category_ids=[
+                self.category_cables.id,
+                self.category_connectors.id
+            ],
+            tag_ids=[
+                self.tag_copper.id,
+                self.tag_outdoor.id
+            ]
+        )
+
+        self.assertCountEqual(
+            results,
+            [self.product1, self.product2, self.product6]
+        )
+
+    def test_combined_filters_with_no_matches(self):
+        """
+        test that incompatible filter combinations return no products
+        """
+        results = filter_products(
+            search_term="copper",
+            category_ids=[self.category_lighting.id],
             tag_ids=[self.tag_copper.id]
         )
 
-        self.assertCountEqual(results, [self.product1])
+        self.assertFalse(results.exists())
 
+    def test_no_filters_returns_all_products(self):
+        """
+        test that omitting all filters returns every product
+        """
+        results = filter_products()
+
+        self.assertCountEqual(
+            results,
+            [
+                self.product1, self.product2, self.product3,
+                self.product4, self.product5, self.product6,
+                self.product7
+            ]
+        )
+
+    def test_results_have_deterministic_ordering(self):
+        """
+        test that results are ordered by name, then primary key
+        """
+        duplicate_name = Product.objects.create(
+            name="Copper Cable",
+            description="Alternative electrical cable",
+            sku="CAB-004",
+            category=self.category_cables
+        )
+        duplicate_name.tags.add(self.tag_copper)
+
+        results = list(filter_products(
+            tag_ids=[self.tag_copper.id, self.tag_outdoor.id]
+        ))
+
+        expected = sorted(
+            [
+                self.product1, self.product2, self.product3,
+                self.product4, self.product6, duplicate_name
+            ],
+            key=lambda product: (product.name, product.pk)
+        )
+
+        self.assertEqual(results, expected)

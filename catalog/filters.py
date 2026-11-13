@@ -5,8 +5,8 @@ from catalog import models
 
 def filter_products(search_term="", category_ids=None, tag_ids=None):
     """
-    Search for products by name or description.
-    Returns a queryset of matching products
+    Filter products by name or description, categories, and tags
+    Return a QuerySet with unique products in deterministic order
     """
     
     # since QuerySet is lazy, we start with all products
@@ -23,9 +23,7 @@ def filter_products(search_term="", category_ids=None, tag_ids=None):
         products = products.filter(category__id__in=category_ids)
 
     if tag_ids:
-        products = products.filter(tags__id__in=tag_ids)
+        # the ".distinct()" call avoid duplicates if multiple tags match
+        products = products.filter(tags__id__in=tag_ids).distinct()
 
-    # avoid duplicates if multiple tags match
-    products = products.distinct()  
-    
-    return products
+    return products.order_by('name', 'pk')
