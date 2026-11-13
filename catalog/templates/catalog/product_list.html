@@ -1,0 +1,76 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Electrical Product Catalog</title>
+
+    <link rel="stylesheet" href="{% static 'catalog/styles.css' %}" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>Electrical Product Catalog</h1>
+      <p>Search and filter available electrical products.</p>
+
+      <form method="get" class="search-form">
+        <div class="field">
+          {{ form.search.label_tag }} {{ form.search }} {{ form.search.errors }}
+        </div>
+
+        <div class="filter-groups">
+          <fieldset>
+            <legend>Categories</legend>
+            {{ form.categories }} {{ form.categories.errors }}
+          </fieldset>
+
+          <fieldset>
+            <legend>Tags</legend>
+            {{ form.tags }} {{ form.tags.errors }}
+          </fieldset>
+        </div>
+
+        <div class="actions">
+          <button type="submit">Search</button>
+          <a href="{% url 'catalog:product_list' %}">Reset</a>
+        </div>
+      </form>
+
+      {% if form.errors %}
+      <p class="error-message" role="alert">
+        Please correct the filters above.
+      </p>
+      {% else %}
+      <section class="results">
+        <h2>
+          {{ products|length }} product{{ products|length|pluralize }} found
+        </h2>
+
+        {% for product in products %}
+        <article class="product-card">
+          <h3>{{ product.name }}</h3>
+
+          <p class="product-meta">
+            SKU: {{ product.sku }} | Category: {{ product.category.name }}
+          </p>
+
+          <p>{{ product.description }}</p>
+
+          <div class="product-tags">
+            {% for tag in product.tags.all %}
+            <span class="tag">{{ tag.name }}</span>
+            {% empty %}
+            <span>No tags</span>
+            {% endfor %}
+          </div>
+        </article>
+        {% empty %}
+        <p>No products found.</p>
+        {% endfor %}
+      </section>
+      {% endif %}
+    </main>
+  </body>
+</html>
