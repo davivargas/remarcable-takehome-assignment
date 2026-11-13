@@ -19,8 +19,8 @@ def product_list(request):
 
         products = filter_products(
             search_term=data["search"],
-            category_ids=[category.pk for category in data.get("categories", [])],
-            tag_ids=[tag.pk for tag in data.get("tags", [])]
+            category_ids=[category.pk for category in data["categories"]],
+            tag_ids=[tag.pk for tag in data["tags"]]
         )
 
     products = products.select_related("category").prefetch_related("tags")

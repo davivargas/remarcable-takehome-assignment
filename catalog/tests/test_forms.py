@@ -86,7 +86,7 @@ class ProductFilterFormTests(TestCase):
 
     def test_search_exceeding_max_length_is_rejected(self):
         """
-        test that search terms longer than 200 characters are rejected
+        test that search terms longer than 100 characters are rejected
         """
         form = ProductFilterForm({
             "search": "a" * 101

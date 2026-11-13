@@ -365,7 +365,7 @@
   "pk": 2,
   "fields": {
     "name": "Lighting",
-    "description": "Lighting fixtures to protect electrical circuits and equipment"
+    "description": "Lighting fixtures for indoor, outdoor, and industrial installations"
   }
 },
 {
@@ -397,7 +397,7 @@
   "pk": 6,
   "fields": {
     "name": "Tools",
-    "description": "Hand tools and testing equipment for eletctrical installations and maintenance"
+    "description": "Hand tools and testing equipment for electrical installations and maintenance"
   }
 }
 ]
