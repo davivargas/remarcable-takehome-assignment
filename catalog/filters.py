@@ -24,8 +24,10 @@ def filter_products(search_term="", category_ids=None, tag_ids=None):
         products = products.filter(category__id__in=category_ids)
 
     if tag_ids:
-        # many-to-many JOINs may duplicate products matching multiple tags,
-        # so we use ".distinct()" to ensure unique products are returned
-        products = products.filter(tags__id__in=tag_ids).distinct()
+        # a product must have every selected tag, so we chain one filter
+        # per tag: each ".filter()" call adds its own JOIN on the tags table.
+        # "tags__id__in" would use a single JOIN and match any of the tags
+        for tag_id in tag_ids:
+            products = products.filter(tags__id=tag_id)
 
     return products.order_by('name', 'pk')

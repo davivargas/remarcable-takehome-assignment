@@ -107,7 +107,7 @@ class ProductListViewTests(TestCase):
     def test_combined_filters_with_multiple_selections(self):
         """
         test that repeated category and tag parameters combine
-        with text search using the expected AND and OR behavior
+        with text search: any selected category, every selected tag
         """
         response = self.client.get(
             self.url,
@@ -127,7 +127,7 @@ class ProductListViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertCountEqual(
             response.context["products"],
-            [self.product1, self.product2]
+            [self.product1]
         )
 
     def test_invalid_category_does_not_show_all_products(self):

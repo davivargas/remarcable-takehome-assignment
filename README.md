@@ -55,10 +55,12 @@ All filters are optional. When several are used, the rules are:
 
 - **Text:** case-insensitive match in the product **name OR description**.
 - **Categories:** match **any** selected category.
-- **Tags:** match **any** selected tag.
+- **Tags:** match **all** selected tags.
 - **Between groups**: When text, category, and tag filters are combined, a product must match each selected filter group (AND) to appear in the results.
 
-For example, searching for `copper`, selecting _Cables & Wires_ and _Connectors_, and selecting _Outdoor_ and _Copper_ returns products matching the text, either category, and at least one selected tag.
+For example, searching for `copper`, selecting _Cables & Wires_ and _Connectors_, and selecting _Outdoor_ and _Copper_ returns products matching the text, either category, and both selected tags.
+
+Categories use "any" because a product has exactly one category, so requiring several at once would never match. Tags use "all" because they describe independent properties (location, material, rating), so each extra tag should narrow the results rather than widen them.
 
 Multiple selections are supported because they make the filters more useful without adding much complexity. Results are unique and ordered by name, then ID. With no filters, all products are shown.
 
@@ -66,7 +68,7 @@ Multiple selections are supported because they make the filters more useful with
 
 A Django form validates category and tag IDs and limits the search term to 100 characters. Invalid input shows a form error instead of returning an unfiltered catalog. SQL-like search text is treated as plain text.
 
-Filtering uses Django QuerySets (`Q`, `__in`, and `distinct()`), not raw SQL. ORM parameterization protects against SQL injection; `select_related()` and `prefetch_related()` reduce extra database queries when rendering results.
+Filtering uses Django QuerySets (`Q`, `__in`, and one chained `filter()` per selected tag), not raw SQL. ORM parameterization protects against SQL injection; `select_related()` and `prefetch_related()` reduce extra database queries when rendering results.
 
 This is a local development project, not a production deployment. The settings use Django's development configuration (`DEBUG=True` and a development secret key).
 

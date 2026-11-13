@@ -212,13 +212,13 @@ class TagFilterTests(TestCase):
 
     def test_filter_by_multiple_tags(self):
         """
-        test that filtering by multiple tags returns products
-        with any of those tags (OR logic)
+        test that filtering by multiple tags returns only products
+        that have every selected tag (AND logic)
         """
         results = filter_products(
             tag_ids=[self.tag_copper.id, self.tag_outdoor.id]
         )
-        self.assertCountEqual(results, [self.product1, self.product2])
+        self.assertCountEqual(results, [self.product1])
 
     def test_filter_with_no_tags(self):
         """
@@ -262,7 +262,7 @@ class CombinedFiltersTests(TestCase):
         )
         cls.product1.tags.add(cls.tag_copper, cls.tag_outdoor)
 
-        # Matches text through description and has the Outdoor tag
+        # Matches text through description, but has only one selected tag
         cls.product2 = Product.objects.create(
             name="Industrial Connector",
             description="Copper terminal for wiring",
@@ -298,7 +298,7 @@ class CombinedFiltersTests(TestCase):
         )
         cls.product5.tags.add(cls.tag_indoor)
 
-        # Matches text through description, category, and tag
+        # Matches text through description and category, but has only one selected tag
         cls.product6 = Product.objects.create(
             name="Industrial Cable",
             description="Copper electrical conductor",
@@ -349,7 +349,7 @@ class CombinedFiltersTests(TestCase):
     def test_filter_by_category_and_tags(self):
         """
         test that category and tag filters are combined using AND,
-        with OR within each group
+        with OR between categories and AND between tags
         """
         results = filter_products(
             category_ids=[
@@ -362,10 +362,7 @@ class CombinedFiltersTests(TestCase):
             ]
         )
 
-        self.assertCountEqual(
-            results,
-            [self.product1, self.product2, self.product3, self.product6]
-        )
+        self.assertCountEqual(results, [self.product1])
 
     def test_filter_by_all_three_groups(self):
         """
@@ -384,10 +381,7 @@ class CombinedFiltersTests(TestCase):
             ]
         )
 
-        self.assertCountEqual(
-            results,
-            [self.product1, self.product2, self.product6]
-        )
+        self.assertCountEqual(results, [self.product1])
 
     def test_combined_filters_with_no_matches(self):
         """
@@ -426,16 +420,14 @@ class CombinedFiltersTests(TestCase):
             sku="CAB-004",
             category=self.category_cables
         )
-        duplicate_name.tags.add(self.tag_copper)
+        duplicate_name.tags.add(self.tag_outdoor)
 
-        results = list(filter_products(
-            tag_ids=[self.tag_copper.id, self.tag_outdoor.id]
-        ))
+        results = list(filter_products(tag_ids=[self.tag_outdoor.id]))
 
         expected = sorted(
             [
                 self.product1, self.product2, self.product3,
-                self.product4, self.product6, duplicate_name
+                self.product4, duplicate_name
             ],
             key=lambda product: (product.name, product.pk)
         )
