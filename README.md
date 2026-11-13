@@ -23,7 +23,7 @@ docker exec -it catalog python manage.py createsuperuser
 
 The database lives inside the container, so changes made through the admin are lost when it stops.
 
-## Run locally
+## or Run locally
 
 Tested with Python 3.13. You also need Git. On macOS / Linux the command may be `python3` instead of `python`.
 
