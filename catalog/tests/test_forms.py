@@ -89,7 +89,7 @@ class ProductFilterFormTests(TestCase):
         test that search terms longer than 200 characters are rejected
         """
         form = ProductFilterForm({
-            "search": "a" * 201
+            "search": "a" * 101
         })
 
         self.assertFalse(form.is_valid())
